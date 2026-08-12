@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -27,13 +35,19 @@ export class OrdersController {
 
   @Get('store/:storeId')
   @ApiOperation({ summary: 'Daftar pesanan toko (Seller view)' })
-  getStoreOrders(@CurrentUser('id') userId: string, @Param('storeId') storeId: string) {
+  getStoreOrders(
+    @CurrentUser('id') userId: string,
+    @Param('storeId') storeId: string,
+  ) {
     return this.ordersService.getStoreOrders(userId, storeId);
   }
 
   @Get(':id')
   @ApiOperation({ summary: 'Detail rincian pesanan' })
-  getOrderById(@CurrentUser('id') userId: string, @Param('id') orderId: string) {
+  getOrderById(
+    @CurrentUser('id') userId: string,
+    @Param('id') orderId: string,
+  ) {
     return this.ordersService.getOrderById(userId, orderId);
   }
 

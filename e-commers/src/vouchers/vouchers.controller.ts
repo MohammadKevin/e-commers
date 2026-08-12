@@ -1,4 +1,13 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Post, Query, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Public } from '../auth/decorators/public.decorator';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -14,7 +23,9 @@ export class VouchersController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @Post()
-  @ApiOperation({ summary: 'Buat kupon / voucher diskon baru (Admin / Seller)' })
+  @ApiOperation({
+    summary: 'Buat kupon / voucher diskon baru (Admin / Seller)',
+  })
   createVoucher(@Body() dto: CreateVoucherDto) {
     return this.vouchersService.createVoucher(dto);
   }

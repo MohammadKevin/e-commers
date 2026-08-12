@@ -1,4 +1,9 @@
-import { ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { StoreRole } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateStoreDto } from './dto/create-store.dto';
@@ -7,6 +12,19 @@ import { UpdateStoreDto } from './dto/update-store.dto';
 @Injectable()
 export class StoresService {
   constructor(private readonly prisma: PrismaService) {}
+
+  async getAllAdminStores() {
+    return this.prisma.store.findMany({
+      include: {
+        members: {
+          include: {
+            user: { select: { fullName: true } },
+          },
+        },
+        orders: { select: { totalAmount: true } },
+      },
+    });
+  }
 
   async createStore(userId: string, dto: CreateStoreDto) {
     const existingName = await this.prisma.store.findUnique({
@@ -86,8 +104,13 @@ export class StoresService {
       },
     });
 
-    if (!member || (member.role !== StoreRole.OWNER && member.role !== StoreRole.ADMIN)) {
-      throw new ForbiddenException('Anda tidak memiliki akses untuk mengedit toko ini');
+    if (
+      !member ||
+      (member.role !== StoreRole.OWNER && member.role !== StoreRole.ADMIN)
+    ) {
+      throw new ForbiddenException(
+        'Anda tidak memiliki akses untuk mengedit toko ini',
+      );
     }
 
     if (dto.slug) {
@@ -102,6 +125,25 @@ export class StoresService {
     return this.prisma.store.update({
       where: { id: storeId },
       data: dto,
+    });
+  }
+
+  // --- ADMIN METHODS ---
+
+  async updateStoreAdmin(id: string, dto: any) {
+    const store = await this.prisma.store.findUnique({ where: { id } });
+    if (!store) {
+      throw new NotFoundException('Toko tidak ditemukan');
+    }
+    return this.prisma.store.update({
+      where: { id },
+      data: dto,
+    });
+  }
+
+  async deleteStoreAdmin(id: string) {
+    return this.prisma.store.delete({
+      where: { id },
     });
   }
 }

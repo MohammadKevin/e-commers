@@ -41,14 +41,14 @@ export default function AdminLayout({
 
   if (!isAuthorized) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50 text-slate-500">
+      <div className="min-h-screen flex items-center justify-center bg-[#F4F6F9] text-slate-500">
         Memverifikasi akses...
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 flex font-sans selection:bg-cyan-200">
+    <div className="min-h-screen bg-[#F4F6F9] flex font-sans selection:bg-blue-200">
       <Sidebar />
       <div className="flex-1 flex flex-col overflow-hidden">
         <Header />

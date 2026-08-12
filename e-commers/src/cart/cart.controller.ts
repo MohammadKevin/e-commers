@@ -1,4 +1,13 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -37,7 +46,10 @@ export class CartController {
 
   @Delete('items/:id')
   @ApiOperation({ summary: 'Hapus barang dari keranjang' })
-  removeFromCart(@CurrentUser('id') userId: string, @Param('id') itemId: string) {
+  removeFromCart(
+    @CurrentUser('id') userId: string,
+    @Param('id') itemId: string,
+  ) {
     return this.cartService.removeFromCart(userId, itemId);
   }
 

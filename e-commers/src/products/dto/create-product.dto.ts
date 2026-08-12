@@ -1,6 +1,15 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { ArrayMinSize, IsArray, IsBoolean, IsNotEmpty, IsOptional, IsString, Matches, ValidateNested } from 'class-validator';
+import {
+  ArrayMinSize,
+  IsArray,
+  IsBoolean,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  Matches,
+  ValidateNested,
+} from 'class-validator';
 import { CreateVariantDto } from './create-variant.dto';
 
 export class CreateProductDto {
@@ -22,10 +31,15 @@ export class CreateProductDto {
   @ApiProperty({ example: 'kemeja-flanel-premium-pria' })
   @IsString()
   @IsNotEmpty({ message: 'Slug produk wajib diisi' })
-  @Matches(/^[a-z0-9-]+$/, { message: 'Slug hanya boleh menggunakan huruf kecil, angka, dan tanda hubung (-)' })
+  @Matches(/^[a-z0-9-]+$/, {
+    message:
+      'Slug hanya boleh menggunakan huruf kecil, angka, dan tanda hubung (-)',
+  })
   slug: string;
 
-  @ApiProperty({ example: 'Kemeja flanel bahan cotton premium adem dan nyaman dipakai.' })
+  @ApiProperty({
+    example: 'Kemeja flanel bahan cotton premium adem dan nyaman dipakai.',
+  })
   @IsString()
   @IsNotEmpty({ message: 'Deskripsi produk wajib diisi' })
   description: string;
@@ -35,7 +49,9 @@ export class CreateProductDto {
   @IsBoolean()
   isPublished?: boolean;
 
-  @ApiPropertyOptional({ example: ['https://example.com/img1.jpg', 'https://example.com/img2.jpg'] })
+  @ApiPropertyOptional({
+    example: ['https://example.com/img1.jpg', 'https://example.com/img2.jpg'],
+  })
   @IsOptional()
   @IsArray()
   @IsString({ each: true })

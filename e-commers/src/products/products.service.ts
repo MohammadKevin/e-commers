@@ -1,4 +1,9 @@
-import { ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { StoreRole } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
@@ -49,7 +54,9 @@ export class ProductsService {
         store = userMember.store;
         storeId = store.id;
       } else {
-        throw new NotFoundException('Toko tidak ditemukan. Silakan buat toko terlebih dahulu.');
+        throw new NotFoundException(
+          'Toko tidak ditemukan. Silakan buat toko terlebih dahulu.',
+        );
       }
     }
 
@@ -74,7 +81,9 @@ export class ProductsService {
 
     // 2. Resolve Category
     let categoryId = dto.categoryId;
-    const cat = await this.prisma.category.findUnique({ where: { id: categoryId } });
+    const cat = await this.prisma.category.findUnique({
+      where: { id: categoryId },
+    });
     if (!cat) {
       const firstCat = await this.prisma.category.findFirst();
       if (firstCat) {
@@ -118,15 +127,16 @@ export class ProductsService {
               imageUrl: v.imageUrl,
             })),
           },
-          images: dto.images && dto.images.length > 0
-            ? {
-                create: dto.images.map((url, idx) => ({
-                  imageUrl: url,
-                  isPrimary: idx === 0,
-                  sortOrder: idx,
-                })),
-              }
-            : undefined,
+          images:
+            dto.images && dto.images.length > 0
+              ? {
+                  create: dto.images.map((url, idx) => ({
+                    imageUrl: url,
+                    isPrimary: idx === 0,
+                    sortOrder: idx,
+                  })),
+                }
+              : undefined,
         },
         include: {
           variants: true,
@@ -198,12 +208,22 @@ export class ProductsService {
       include: {
         images: { orderBy: { sortOrder: 'asc' } },
         variants: true,
-        store: { select: { id: true, name: true, slug: true, logoUrl: true, city: true } },
+        store: {
+          select: {
+            id: true,
+            name: true,
+            slug: true,
+            logoUrl: true,
+            city: true,
+          },
+        },
         category: { select: { id: true, name: true, slug: true } },
         reviews: {
           take: 5,
           orderBy: { createdAt: 'desc' },
-          include: { user: { select: { id: true, fullName: true, avatarUrl: true } } },
+          include: {
+            user: { select: { id: true, fullName: true, avatarUrl: true } },
+          },
         },
       },
     });
@@ -232,7 +252,9 @@ export class ProductsService {
 
   async deleteProduct(productId: string) {
     try {
-      await this.prisma.cartItem.deleteMany({ where: { variant: { productId } } });
+      await this.prisma.cartItem.deleteMany({
+        where: { variant: { productId } },
+      });
       await this.prisma.productImage.deleteMany({ where: { productId } });
       await this.prisma.productVariant.deleteMany({ where: { productId } });
       await this.prisma.product.delete({ where: { id: productId } });

@@ -19,7 +19,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: configService.get<string>('JWT_SECRET') || 'super-secret-ecommers-jwt-key-2026',
+      secretOrKey:
+        configService.get<string>('JWT_SECRET') ||
+        'super-secret-ecommers-jwt-key-2026',
     });
   }
 
@@ -44,7 +46,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
 
     if (!user) {
-      throw new UnauthorizedException('Sesi tidak valid atau pengguna tidak ditemukan');
+      throw new UnauthorizedException(
+        'Sesi tidak valid atau pengguna tidak ditemukan',
+      );
     }
 
     const ownedStores = (user.stores || []).map((sm) => ({

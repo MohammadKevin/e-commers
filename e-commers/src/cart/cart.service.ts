@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { AddToCartDto } from './dto/add-to-cart.dto';
 import { UpdateCartItemDto } from './dto/update-cart-item.dto';
@@ -46,9 +50,10 @@ export class CartService {
       },
     });
 
-    const subtotal = cartWithDetails?.items.reduce((sum, item) => {
-      return sum + Number(item.variant.price) * item.quantity;
-    }, 0) || 0;
+    const subtotal =
+      cartWithDetails?.items.reduce((sum, item) => {
+        return sum + Number(item.variant.price) * item.quantity;
+      }, 0) || 0;
 
     return {
       cartId: cart.id,
@@ -70,7 +75,9 @@ export class CartService {
     }
 
     if (variant.stock < dto.quantity) {
-      throw new BadRequestException(`Stok barang tidak mencukupi (tersedia: ${variant.stock})`);
+      throw new BadRequestException(
+        `Stok barang tidak mencukupi (tersedia: ${variant.stock})`,
+      );
     }
 
     const existingItem = await this.prisma.cartItem.findUnique({
@@ -85,7 +92,9 @@ export class CartService {
     if (existingItem) {
       const newQuantity = existingItem.quantity + dto.quantity;
       if (variant.stock < newQuantity) {
-        throw new BadRequestException(`Stok barang tidak mencukupi (tersedia: ${variant.stock})`);
+        throw new BadRequestException(
+          `Stok barang tidak mencukupi (tersedia: ${variant.stock})`,
+        );
       }
 
       return this.prisma.cartItem.update({
@@ -116,7 +125,9 @@ export class CartService {
     }
 
     if (item.variant.stock < dto.quantity) {
-      throw new BadRequestException(`Stok barang tidak mencukupi (tersedia: ${item.variant.stock})`);
+      throw new BadRequestException(
+        `Stok barang tidak mencukupi (tersedia: ${item.variant.stock})`,
+      );
     }
 
     return this.prisma.cartItem.update({

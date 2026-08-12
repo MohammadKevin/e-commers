@@ -1,4 +1,9 @@
-import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { OrderStatus, PaymentStatus } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreatePaymentDto } from './dto/create-payment.dto';
@@ -23,7 +28,9 @@ export class PaymentsService {
     }
 
     if (order.status !== OrderStatus.PENDING_PAYMENT) {
-      throw new BadRequestException(`Pesanan tidak dalam status menunggu pembayaran (Status: ${order.status})`);
+      throw new BadRequestException(
+        `Pesanan tidak dalam status menunggu pembayaran (Status: ${order.status})`,
+      );
     }
 
     const snapToken = `SNAP-DEMO-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
@@ -58,10 +65,7 @@ export class PaymentsService {
   async handleWebhook(dto: PaymentWebhookDto) {
     const payment = await this.prisma.paymentTransaction.findFirst({
       where: {
-        OR: [
-          { orderId: dto.orderId },
-          { referenceId: dto.referenceId },
-        ],
+        OR: [{ orderId: dto.orderId }, { referenceId: dto.referenceId }],
       },
       include: { order: true },
     });
@@ -84,7 +88,10 @@ export class PaymentsService {
           where: { id: payment.orderId },
           data: { status: OrderStatus.PAID },
         });
-      } else if (dto.status === PaymentStatus.FAILED || dto.status === PaymentStatus.EXPIRED) {
+      } else if (
+        dto.status === PaymentStatus.FAILED ||
+        dto.status === PaymentStatus.EXPIRED
+      ) {
         await tx.order.update({
           where: { id: payment.orderId },
           data: { status: OrderStatus.CANCELLED },

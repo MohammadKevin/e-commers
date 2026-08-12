@@ -14,8 +14,13 @@ export class ReviewsController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @Post()
-  @ApiOperation({ summary: 'Tambah ulasan & rating produk (Bisa dilakukan oleh pembeli)' })
-  createReview(@CurrentUser('id') userId: string, @Body() dto: CreateReviewDto) {
+  @ApiOperation({
+    summary: 'Tambah ulasan & rating produk (Bisa dilakukan oleh pembeli)',
+  })
+  createReview(
+    @CurrentUser('id') userId: string,
+    @Body() dto: CreateReviewDto,
+  ) {
     return this.reviewsService.createReview(userId, dto);
   }
 

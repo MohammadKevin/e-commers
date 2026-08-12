@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { OrderStatus } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateReviewDto } from './dto/create-review.dto';
@@ -19,7 +23,9 @@ export class ReviewsService {
     const hasPurchased = await this.prisma.order.findFirst({
       where: {
         buyerId: userId,
-        status: { in: [OrderStatus.DELIVERED, OrderStatus.PAID, OrderStatus.SHIPPED] },
+        status: {
+          in: [OrderStatus.DELIVERED, OrderStatus.PAID, OrderStatus.SHIPPED],
+        },
         items: {
           some: {
             variant: {
@@ -31,7 +37,9 @@ export class ReviewsService {
     });
 
     if (!hasPurchased) {
-      throw new BadRequestException('Anda hanya dapat memberikan ulasan pada produk yang telah Anda beli');
+      throw new BadRequestException(
+        'Anda hanya dapat memberikan ulasan pada produk yang telah Anda beli',
+      );
     }
 
     return this.prisma.review.create({

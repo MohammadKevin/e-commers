@@ -1,16 +1,25 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { UploadApiErrorResponse, UploadApiResponse, v2 as cloudinary } from 'cloudinary';
+import {
+  UploadApiErrorResponse,
+  UploadApiResponse,
+  v2 as cloudinary,
+} from 'cloudinary';
 import * as streamifier from 'streamifier';
 
 @Injectable()
 export class UploadsService {
-  uploadFile(file: Express.Multer.File, folder = 'e-commers/products'): Promise<UploadApiResponse | UploadApiErrorResponse> {
+  uploadFile(
+    file: Express.Multer.File,
+    folder = 'e-commers/products',
+  ): Promise<UploadApiResponse | UploadApiErrorResponse> {
     if (!file) {
       throw new BadRequestException('Berkas foto tidak ditemukan');
     }
 
     if (!file.mimetype.startsWith('image/')) {
-      throw new BadRequestException('Format file harus berupa gambar (JPG, PNG, WEBP, dll)');
+      throw new BadRequestException(
+        'Format file harus berupa gambar (JPG, PNG, WEBP, dll)',
+      );
     }
 
     return new Promise((resolve, reject) => {
@@ -29,7 +38,10 @@ export class UploadsService {
     });
   }
 
-  async uploadMultipleFiles(files: Express.Multer.File[], folder = 'e-commers/products') {
+  async uploadMultipleFiles(
+    files: Express.Multer.File[],
+    folder = 'e-commers/products',
+  ) {
     if (!files || files.length === 0) {
       throw new BadRequestException('Berkas foto tidak ditemukan');
     }

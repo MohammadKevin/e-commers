@@ -11,9 +11,16 @@ export interface ShippingOption {
 
 @Injectable()
 export class ShippingService {
-  async calculateShipping(dto: CalculateShippingDto): Promise<{ origin: string; destination: string; weightInKg: number; options: ShippingOption[] }> {
+  async calculateShipping(dto: CalculateShippingDto): Promise<{
+    origin: string;
+    destination: string;
+    weightInKg: number;
+    options: ShippingOption[];
+  }> {
     const weightInKg = Math.ceil(dto.weightInGrams / 1000);
-    const isSameCity = dto.originCity.toLowerCase().trim() === dto.destinationCity.toLowerCase().trim();
+    const isSameCity =
+      dto.originCity.toLowerCase().trim() ===
+      dto.destinationCity.toLowerCase().trim();
 
     const baseRateJNE = isSameCity ? 9000 : 15000;
     const baseRateSiCepat = isSameCity ? 8000 : 14000;

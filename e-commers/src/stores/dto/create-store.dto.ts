@@ -10,10 +10,15 @@ export class CreateStoreDto {
   @ApiProperty({ example: 'toko-berkah-utama' })
   @IsString()
   @IsNotEmpty({ message: 'Slug toko wajib diisi' })
-  @Matches(/^[a-z0-9-]+$/, { message: 'Slug hanya boleh menggunakan huruf kecil, angka, dan tanda hubung (-)' })
+  @Matches(/^[a-z0-9-]+$/, {
+    message:
+      'Slug hanya boleh menggunakan huruf kecil, angka, dan tanda hubung (-)',
+  })
   slug: string;
 
-  @ApiPropertyOptional({ example: 'Toko penyedia kebutuhan fashion terlengkap' })
+  @ApiPropertyOptional({
+    example: 'Toko penyedia kebutuhan fashion terlengkap',
+  })
   @IsOptional()
   @IsString()
   description?: string;

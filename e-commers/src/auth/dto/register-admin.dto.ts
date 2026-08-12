@@ -1,6 +1,13 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { GlobalRole } from '@prisma/client';
-import { IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString, MinLength } from 'class-validator';
+import {
+  IsEmail,
+  IsEnum,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  MinLength,
+} from 'class-validator';
 
 export class RegisterAdminDto {
   @ApiProperty({ example: 'admin@example.com' })
@@ -26,7 +33,8 @@ export class RegisterAdminDto {
   @ApiProperty({
     enum: GlobalRole,
     example: GlobalRole.SUPER_ADMIN,
-    description: 'Pilihan role penting: SUPER_ADMIN, OPERATIONS_CS, FINANCE_ADMIN, MARKETING_ADMIN',
+    description:
+      'Pilihan role penting: SUPER_ADMIN, OPERATIONS_CS, FINANCE_ADMIN, MARKETING_ADMIN',
   })
   @IsEnum(GlobalRole, { message: 'Global role tidak valid' })
   @IsNotEmpty({ message: 'Global role wajib diisi' })

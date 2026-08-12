@@ -1,6 +1,19 @@
-import { Controller, Post, UploadedFile, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  UploadedFile,
+  UploadedFiles,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
-import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { UploadsService } from './uploads.service';
 
@@ -35,7 +48,9 @@ export class UploadsController {
   }
 
   @Post('images')
-  @ApiOperation({ summary: 'Unggah banyak foto produk sekaligus ke Cloudinary (Galeri)' })
+  @ApiOperation({
+    summary: 'Unggah banyak foto produk sekaligus ke Cloudinary (Galeri)',
+  })
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     schema: {

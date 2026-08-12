@@ -10,7 +10,10 @@ export class CreateCategoryDto {
   @ApiProperty({ example: 'pakaian-pria' })
   @IsString()
   @IsNotEmpty({ message: 'Slug kategori wajib diisi' })
-  @Matches(/^[a-z0-9-]+$/, { message: 'Slug hanya boleh menggunakan huruf kecil, angka, dan tanda hubung (-)' })
+  @Matches(/^[a-z0-9-]+$/, {
+    message:
+      'Slug hanya boleh menggunakan huruf kecil, angka, dan tanda hubung (-)',
+  })
   slug: string;
 
   @ApiPropertyOptional({ example: 'category-parent-uuid-here' })

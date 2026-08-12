@@ -1,4 +1,12 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { CurrentUser } from './decorators/current-user.decorator';
@@ -22,7 +30,10 @@ export class AuthController {
 
   @Public()
   @Post('register-admin')
-  @ApiOperation({ summary: 'Registrasi khusus akun role penting (SUPER_ADMIN, OPERATIONS_CS, FINANCE_ADMIN, MARKETING_ADMIN)' })
+  @ApiOperation({
+    summary:
+      'Registrasi khusus akun role penting (SUPER_ADMIN, OPERATIONS_CS, FINANCE_ADMIN, MARKETING_ADMIN)',
+  })
   async registerAdmin(@Body() registerAdminDto: RegisterAdminDto) {
     return this.authService.registerAdmin(registerAdminDto);
   }

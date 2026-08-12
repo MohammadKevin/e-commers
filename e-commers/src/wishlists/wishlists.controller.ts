@@ -12,8 +12,13 @@ export class WishlistsController {
   constructor(private readonly wishlistsService: WishlistsService) {}
 
   @Post(':productId')
-  @ApiOperation({ summary: 'Tambah / Hapus produk dari daftar impian (Wishlist)' })
-  toggleWishlist(@CurrentUser('id') userId: string, @Param('productId') productId: string) {
+  @ApiOperation({
+    summary: 'Tambah / Hapus produk dari daftar impian (Wishlist)',
+  })
+  toggleWishlist(
+    @CurrentUser('id') userId: string,
+    @Param('productId') productId: string,
+  ) {
     return this.wishlistsService.toggleWishlist(userId, productId);
   }
 

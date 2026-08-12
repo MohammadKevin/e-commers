@@ -8,9 +8,13 @@ export const CloudinaryProvider = {
   inject: [ConfigService],
   useFactory: (configService: ConfigService) => {
     return cloudinary.config({
-      cloud_name: configService.get<string>('CLOUDINARY_CLOUD_NAME') || 'dii1mybyz',
-      api_key: configService.get<string>('CLOUDINARY_API_KEY') || '827182263461469',
-      api_secret: configService.get<string>('CLOUDINARY_API_SECRET') || 'onNYmsxWjEl6_LJrGNkyKgQWN0k',
+      cloud_name:
+        configService.get<string>('CLOUDINARY_CLOUD_NAME') || 'dii1mybyz',
+      api_key:
+        configService.get<string>('CLOUDINARY_API_KEY') || '827182263461469',
+      api_secret:
+        configService.get<string>('CLOUDINARY_API_SECRET') ||
+        'onNYmsxWjEl6_LJrGNkyKgQWN0k',
     });
   },
 };

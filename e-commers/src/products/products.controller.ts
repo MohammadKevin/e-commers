@@ -1,4 +1,13 @@
-import { Body, Controller, Delete, Get, Param, Post, Query, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { Public } from '../auth/decorators/public.decorator';
@@ -53,7 +62,10 @@ export class ProductsController {
   @ApiBearerAuth()
   @Post()
   @ApiOperation({ summary: 'Tambah produk baru berserta varian & foto' })
-  createProduct(@CurrentUser('id') userId: string, @Body() dto: CreateProductDto) {
+  createProduct(
+    @CurrentUser('id') userId: string,
+    @Body() dto: CreateProductDto,
+  ) {
     return this.productsService.createProduct(userId, dto);
   }
 

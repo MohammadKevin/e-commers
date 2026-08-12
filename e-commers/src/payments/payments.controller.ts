@@ -1,4 +1,13 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { Public } from '../auth/decorators/public.decorator';
@@ -15,15 +24,23 @@ export class PaymentsController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @Post()
-  @ApiOperation({ summary: 'Buat transaksi pembayaran pesanan (generate snap token)' })
-  createPayment(@CurrentUser('id') userId: string, @Body() dto: CreatePaymentDto) {
+  @ApiOperation({
+    summary: 'Buat transaksi pembayaran pesanan (generate snap token)',
+  })
+  createPayment(
+    @CurrentUser('id') userId: string,
+    @Body() dto: CreatePaymentDto,
+  ) {
     return this.paymentsService.createPayment(userId, dto);
   }
 
   @Public()
   @HttpCode(HttpStatus.OK)
   @Post('webhook')
-  @ApiOperation({ summary: 'Endpoint callback / webhook dari Payment Gateway (Midtrans/Xendit)' })
+  @ApiOperation({
+    summary:
+      'Endpoint callback / webhook dari Payment Gateway (Midtrans/Xendit)',
+  })
   handleWebhook(@Body() dto: PaymentWebhookDto) {
     return this.paymentsService.handleWebhook(dto);
   }
@@ -31,8 +48,13 @@ export class PaymentsController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @Get('order/:orderId')
-  @ApiOperation({ summary: 'Status transaksi pembayaran berdasarkan ID pesanan' })
-  getPaymentByOrder(@CurrentUser('id') userId: string, @Param('orderId') orderId: string) {
+  @ApiOperation({
+    summary: 'Status transaksi pembayaran berdasarkan ID pesanan',
+  })
+  getPaymentByOrder(
+    @CurrentUser('id') userId: string,
+    @Param('orderId') orderId: string,
+  ) {
     return this.paymentsService.getPaymentByOrder(userId, orderId);
   }
 }

@@ -12,7 +12,10 @@ export class ShippingController {
   @Public()
   @HttpCode(HttpStatus.OK)
   @Post('calculate')
-  @ApiOperation({ summary: 'Kalkulasi ongkos kirim (JNE, SiCepat, J&T, Instant) berdasarkan lokasi & berat' })
+  @ApiOperation({
+    summary:
+      'Kalkulasi ongkos kirim (JNE, SiCepat, J&T, Instant) berdasarkan lokasi & berat',
+  })
   calculateShipping(@Body() dto: CalculateShippingDto) {
     return this.shippingService.calculateShipping(dto);
   }

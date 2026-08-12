@@ -1,4 +1,9 @@
-import { BadRequestException, ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { GlobalRole } from '@prisma/client';
@@ -54,7 +59,11 @@ export class AuthService {
       },
     });
 
-    const accessToken = this.generateToken(user.id, user.email, user.globalRole);
+    const accessToken = this.generateToken(
+      user.id,
+      user.email,
+      user.globalRole,
+    );
 
     return {
       user,
@@ -63,13 +72,19 @@ export class AuthService {
   }
 
   async registerAdmin(dto: RegisterAdminDto) {
-    const validAdminSecret = this.configService.get<string>('ADMIN_SECRET_KEY') || 'secret-admin-key-2026';
+    const validAdminSecret =
+      this.configService.get<string>('ADMIN_SECRET_KEY') ||
+      'secret-admin-key-2026';
     if (dto.secretKey !== validAdminSecret) {
-      throw new UnauthorizedException('Secret Key untuk registrasi akun admin tidak valid');
+      throw new UnauthorizedException(
+        'Secret Key untuk registrasi akun admin tidak valid',
+      );
     }
 
     if (dto.globalRole === GlobalRole.USER) {
-      throw new BadRequestException('Role USER harus mendaftar melalui endpoint /auth/register biasa');
+      throw new BadRequestException(
+        'Role USER harus mendaftar melalui endpoint /auth/register biasa',
+      );
     }
 
     const existingUser = await this.prisma.user.findUnique({
@@ -110,7 +125,11 @@ export class AuthService {
       },
     });
 
-    const accessToken = this.generateToken(user.id, user.email, user.globalRole);
+    const accessToken = this.generateToken(
+      user.id,
+      user.email,
+      user.globalRole,
+    );
 
     return {
       user,
@@ -127,13 +146,20 @@ export class AuthService {
       throw new UnauthorizedException('Email atau password salah');
     }
 
-    const isPasswordValid = await bcrypt.compare(loginDto.password, user.passwordHash);
+    const isPasswordValid = await bcrypt.compare(
+      loginDto.password,
+      user.passwordHash,
+    );
 
     if (!isPasswordValid) {
       throw new UnauthorizedException('Email atau password salah');
     }
 
-    const accessToken = this.generateToken(user.id, user.email, user.globalRole);
+    const accessToken = this.generateToken(
+      user.id,
+      user.email,
+      user.globalRole,
+    );
 
     return {
       user: {
@@ -149,7 +175,11 @@ export class AuthService {
     };
   }
 
-  private generateToken(userId: string, email: string, globalRole: string): string {
+  private generateToken(
+    userId: string,
+    email: string,
+    globalRole: string,
+  ): string {
     const payload = { sub: userId, email, globalRole };
     return this.jwtService.sign(payload);
   }

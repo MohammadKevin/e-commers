@@ -1,4 +1,9 @@
-import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { OrderStatus, StoreRole } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateOrderDto } from './dto/create-order.dto';
@@ -56,15 +61,21 @@ export class OrdersService {
         });
 
         if (!variant) {
-          throw new NotFoundException(`Varian dengan ID ${itemDto.variantId} tidak ditemukan`);
+          throw new NotFoundException(
+            `Varian dengan ID ${itemDto.variantId} tidak ditemukan`,
+          );
         }
 
         if (variant.product.storeId !== dto.storeId) {
-          throw new BadRequestException(`Produk ${variant.product.name} tidak berasal dari toko ini`);
+          throw new BadRequestException(
+            `Produk ${variant.product.name} tidak berasal dari toko ini`,
+          );
         }
 
         if (variant.stock < itemDto.quantity) {
-          throw new BadRequestException(`Stok varian ${variant.name} tidak mencukupi (tersedia: ${variant.stock})`);
+          throw new BadRequestException(
+            `Stok varian ${variant.name} tidak mencukupi (tersedia: ${variant.stock})`,
+          );
         }
 
         const itemPrice = Number(variant.price);
@@ -142,7 +153,14 @@ export class OrdersService {
       include: {
         items: true,
         store: { select: { id: true, name: true, slug: true, logoUrl: true } },
-        payment: { select: { id: true, status: true, paymentMethod: true, snapToken: true } },
+        payment: {
+          select: {
+            id: true,
+            status: true,
+            paymentMethod: true,
+            snapToken: true,
+          },
+        },
       },
     });
   }
@@ -153,7 +171,9 @@ export class OrdersService {
     });
 
     if (!member) {
-      throw new ForbiddenException('Anda tidak memiliki akses ke pesanan toko ini');
+      throw new ForbiddenException(
+        'Anda tidak memiliki akses ke pesanan toko ini',
+      );
     }
 
     return this.prisma.order.findMany({
@@ -161,7 +181,9 @@ export class OrdersService {
       orderBy: { createdAt: 'desc' },
       include: {
         items: true,
-        buyer: { select: { id: true, fullName: true, email: true, phone: true } },
+        buyer: {
+          select: { id: true, fullName: true, email: true, phone: true },
+        },
         payment: { select: { id: true, status: true, paymentMethod: true } },
       },
     });
@@ -172,7 +194,15 @@ export class OrdersService {
       where: { id: orderId },
       include: {
         items: true,
-        store: { select: { id: true, name: true, slug: true, logoUrl: true, city: true } },
+        store: {
+          select: {
+            id: true,
+            name: true,
+            slug: true,
+            logoUrl: true,
+            city: true,
+          },
+        },
         payment: true,
         shipment: true,
       },
@@ -187,14 +217,20 @@ export class OrdersService {
         where: { storeId_userId: { storeId: order.storeId, userId } },
       });
       if (!member) {
-        throw new ForbiddenException('Anda tidak memiliki akses ke rincian pesanan ini');
+        throw new ForbiddenException(
+          'Anda tidak memiliki akses ke rincian pesanan ini',
+        );
       }
     }
 
     return order;
   }
 
-  async updateOrderStatus(userId: string, orderId: string, dto: UpdateOrderStatusDto) {
+  async updateOrderStatus(
+    userId: string,
+    orderId: string,
+    dto: UpdateOrderStatusDto,
+  ) {
     const order = await this.prisma.order.findUnique({
       where: { id: orderId },
     });
@@ -207,8 +243,13 @@ export class OrdersService {
       where: { storeId_userId: { storeId: order.storeId, userId } },
     });
 
-    if (!member || (member.role !== StoreRole.OWNER && member.role !== StoreRole.ADMIN)) {
-      throw new ForbiddenException('Anda tidak memiliki izin mengubah status pesanan ini');
+    if (
+      !member ||
+      (member.role !== StoreRole.OWNER && member.role !== StoreRole.ADMIN)
+    ) {
+      throw new ForbiddenException(
+        'Anda tidak memiliki izin mengubah status pesanan ini',
+      );
     }
 
     return this.prisma.order.update({

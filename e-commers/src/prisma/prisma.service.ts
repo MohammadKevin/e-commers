@@ -3,7 +3,8 @@ import { PrismaClient } from '@prisma/client';
 import { PrismaMariaDb } from '@prisma/adapter-mariadb';
 
 function getAdapter() {
-  const dbUrl = process.env.DATABASE_URL || 'mysql://root:@localhost:3306/E-commers';
+  const dbUrl =
+    process.env.DATABASE_URL || 'mysql://root:@localhost:3306/E-commers';
   const url = new URL(dbUrl);
 
   return new PrismaMariaDb({
@@ -17,7 +18,10 @@ function getAdapter() {
 }
 
 @Injectable()
-export class PrismaService extends PrismaClient implements OnModuleInit, OnModuleDestroy {
+export class PrismaService
+  extends PrismaClient
+  implements OnModuleInit, OnModuleDestroy
+{
   constructor() {
     super({ adapter: getAdapter() });
   }

@@ -1,4 +1,9 @@
-import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { ApplyVoucherDto } from './dto/apply-voucher.dto';
 import { CreateVoucherDto } from './dto/create-voucher.dto';
@@ -31,10 +36,7 @@ export class VouchersService {
         isActive: true,
         startDate: { lte: now },
         endDate: { gte: now },
-        OR: [
-          { storeId: null },
-          storeId ? { storeId } : {},
-        ],
+        OR: [{ storeId: null }, storeId ? { storeId } : {}],
       },
       orderBy: { endDate: 'asc' },
     });
@@ -59,11 +61,18 @@ export class VouchersService {
     }
 
     if (voucher.storeId && dto.storeId && voucher.storeId !== dto.storeId) {
-      throw new BadRequestException('Voucher ini hanya berlaku untuk toko tertentu');
+      throw new BadRequestException(
+        'Voucher ini hanya berlaku untuk toko tertentu',
+      );
     }
 
-    if (voucher.minPurchase && dto.subtotalAmount < Number(voucher.minPurchase)) {
-      throw new BadRequestException(`Minimal belanja untuk voucher ini adalah Rp ${Number(voucher.minPurchase).toLocaleString('id-ID')}`);
+    if (
+      voucher.minPurchase &&
+      dto.subtotalAmount < Number(voucher.minPurchase)
+    ) {
+      throw new BadRequestException(
+        `Minimal belanja untuk voucher ini adalah Rp ${Number(voucher.minPurchase).toLocaleString('id-ID')}`,
+      );
     }
 
     let calculatedDiscount = 0;
@@ -71,7 +80,10 @@ export class VouchersService {
       calculatedDiscount = Number(voucher.discountAmount);
     } else if (voucher.discountPercent) {
       calculatedDiscount = (dto.subtotalAmount * voucher.discountPercent) / 100;
-      if (voucher.maxDiscount && calculatedDiscount > Number(voucher.maxDiscount)) {
+      if (
+        voucher.maxDiscount &&
+        calculatedDiscount > Number(voucher.maxDiscount)
+      ) {
         calculatedDiscount = Number(voucher.maxDiscount);
       }
     }
