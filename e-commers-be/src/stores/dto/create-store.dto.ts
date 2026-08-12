@@ -7,11 +7,11 @@ export class CreateStoreDto {
   @IsNotEmpty({ message: 'Nama toko wajib diisi' })
   name: string;
 
-  @ApiProperty({ example: 'toko-berkah-utama' })
+  @ApiPropertyOptional({ example: 'toko-berkah-utama', description: 'Jika tidak diisi akan di-generate otomatis dari nama toko' })
+  @IsOptional()
   @IsString()
-  @IsNotEmpty({ message: 'Slug toko wajib diisi' })
   @Matches(/^[a-z0-9-]+$/, { message: 'Slug hanya boleh menggunakan huruf kecil, angka, dan tanda hubung (-)' })
-  slug: string;
+  slug?: string;
 
   @ApiPropertyOptional({ example: 'Toko penyedia kebutuhan fashion terlengkap' })
   @IsOptional()

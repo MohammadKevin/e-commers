@@ -91,11 +91,26 @@ export default function SellerDashboardPage() {
     setSubmitting(true);
     
     try {
-      await api.post("/stores", createForm);
+      // Auto-generate slug dari nama toko
+      const slug = createForm.name
+        .toLowerCase()
+        .replace(/[^a-z0-9\s]/g, "")
+        .trim()
+        .replace(/\s+/g, "-")
+        .replace(/-+/g, "-")
+        .replace(/^-|-$/g, "") || "toko";
+      
+      await api.post("/stores", {
+        name: createForm.name,
+        slug: slug + "-" + Date.now().toString().slice(-6),
+        description: createForm.description,
+        city: createForm.city,
+      });
       await fetchMyStore();
       setIsCreating(false);
     } catch (err: any) {
-      setError(err.response?.data?.message || "Gagal membuat toko");
+      const msg = err.response?.data?.message;
+      setError(Array.isArray(msg) ? msg.join(", ") : msg || "Gagal membuat toko");
     } finally {
       setSubmitting(false);
     }

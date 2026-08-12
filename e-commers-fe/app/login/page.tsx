@@ -30,28 +30,35 @@ export default function LoginPage() {
         throw new Error(data.message || "Gagal melakukan login");
       }
 
-      // Simpan token ke localStorage atau cookies jika perlu
-      if (data.accessToken || data.access_token) {
-        localStorage.setItem("token", data.accessToken || data.access_token);
-      }
-      
-      if (data.user) {
-        localStorage.setItem("user", JSON.stringify(data.user));
-      }
+      // Simpan token dan user
+      const token = data.accessToken || data.access_token;
+      if (token) localStorage.setItem("token", token);
+      if (data.user) localStorage.setItem("user", JSON.stringify(data.user));
       
       // Redirect berdasarkan role
       const role = data.user?.globalRole;
-      if (role === "SUPER_ADMIN") {
-        router.push("/admin");
-      } else if (role === "FINANCE_ADMIN") {
-        router.push("/finance");
-      } else if (role === "MARKETING_ADMIN") {
-        router.push("/marketing");
-      } else if (role === "OPERATIONS_CS") {
-        router.push("/operations");
-      } else {
-        router.push("/");
-      }
+      if (role === "SUPER_ADMIN") { router.push("/admin"); return; }
+      if (role === "FINANCE_ADMIN") { router.push("/finance"); return; }
+      if (role === "MARKETING_ADMIN") { router.push("/marketing"); return; }
+      if (role === "OPERATIONS_CS") { router.push("/operations"); return; }
+
+      // Untuk USER biasa — cek apakah punya toko (seller)
+      try {
+        const storeRes = await fetch("http://localhost:5000/stores/my-stores", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (storeRes.ok) {
+          const stores = await storeRes.json();
+          if (stores && stores.length > 0) {
+            // Punya toko → langsung ke seller dashboard
+            router.push("/seller");
+            return;
+          }
+        }
+      } catch {}
+      
+      // Tidak punya toko → buyer biasa ke homepage
+      router.push("/");
     } catch (err: any) {
       setError(err.message);
     } finally {

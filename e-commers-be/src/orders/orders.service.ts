@@ -89,7 +89,23 @@ export class OrdersService {
         });
       }
 
-      const discountAmount = 0;
+      // Apply voucher discount
+      let discountAmount = 0;
+      if (dto.voucherId) {
+        const voucher = await tx.voucher.findUnique({ where: { id: dto.voucherId } });
+        if (voucher && voucher.isActive && new Date() <= voucher.endDate && voucher.usedCount < voucher.quota) {
+          const minPurchase = voucher.minPurchase ? Number(voucher.minPurchase) : 0;
+          if (subtotalAmount >= minPurchase) {
+            if (voucher.discountPercent) {
+              discountAmount = Math.round(subtotalAmount * voucher.discountPercent / 100);
+              if (voucher.maxDiscount) discountAmount = Math.min(discountAmount, Number(voucher.maxDiscount));
+            } else if (voucher.discountAmount) {
+              discountAmount = Math.min(Number(voucher.discountAmount), subtotalAmount);
+            }
+            await tx.voucher.update({ where: { id: dto.voucherId }, data: { usedCount: { increment: 1 } } });
+          }
+        }
+      }
       const totalAmount = subtotalAmount + dto.shippingCost - discountAmount;
       const orderNumber = this.generateOrderNumber();
 

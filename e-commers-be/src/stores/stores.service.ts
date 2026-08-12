@@ -16,16 +16,35 @@ export class StoresService {
       throw new ConflictException('Nama toko sudah digunakan');
     }
 
+    // Auto-generate slug jika tidak dikirim
+    let slug = dto.slug;
+    if (!slug) {
+      slug = dto.name
+        .toLowerCase()
+        .replace(/[àáâãäå]/g, 'a')
+        .replace(/[èéêë]/g, 'e')
+        .replace(/[ìíîï]/g, 'i')
+        .replace(/[òóôõö]/g, 'o')
+        .replace(/[ùúûü]/g, 'u')
+        .replace(/[^a-z0-9\s]/g, '')
+        .trim()
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-')
+        .replace(/^-|-$/g, '')
+        || 'toko';
+      slug = slug + '-' + Date.now().toString().slice(-6);
+    }
+
     const existingSlug = await this.prisma.store.findUnique({
-      where: { slug: dto.slug },
+      where: { slug },
     });
     if (existingSlug) {
-      throw new ConflictException('Slug toko sudah digunakan');
+      slug = slug + '-' + Date.now().toString().slice(-4);
     }
 
     return this.prisma.$transaction(async (tx) => {
       const store = await tx.store.create({
-        data: dto,
+        data: { ...dto, slug },
       });
 
       await tx.storeMember.create({

@@ -54,10 +54,56 @@ export class AuthService {
       },
     });
 
+    // Auto-create store jika daftar sebagai seller
+    let storeCreated = false;
+    if (registerDto.isSeller && registerDto.storeName) {
+      try {
+        const storeName = registerDto.storeName.trim();
+        // Generate slug yang aman: support huruf latin, angka, hapus karakter lain
+        const storeSlug = storeName
+          .toLowerCase()
+          // Ganti karakter Indonesia umum
+          .replace(/[àáâãäåæ]/g, 'a')
+          .replace(/[èéêë]/g, 'e')
+          .replace(/[ìíîï]/g, 'i')
+          .replace(/[òóôõöø]/g, 'o')
+          .replace(/[ùúûü]/g, 'u')
+          .replace(/[ñ]/g, 'n')
+          .replace(/[ç]/g, 'c')
+          // Hapus semua karakter selain huruf kecil, angka, spasi
+          .replace(/[^a-z0-9\s]/g, '')
+          .trim()
+          // Ganti spasi dan strip ganda jadi satu dash
+          .replace(/\s+/g, '-')
+          .replace(/-+/g, '-')
+          .replace(/^-|-$/g, '')
+          // Pastikan tidak kosong
+          || 'toko'
+          // Tambah suffix unik
+        + '-' + Date.now().toString().slice(-6);
+
+        await this.prisma.store.create({
+          data: {
+            name: storeName,
+            slug: storeSlug,
+            city: registerDto.storeCity || 'Jakarta',
+            description: `Toko milik ${user.fullName}`,
+            members: {
+              create: { userId: user.id, role: 'OWNER' },
+            },
+          },
+        });
+        storeCreated = true;
+      } catch (e) {
+        // Store creation failed silently — user masih terdaftar
+        console.error('Store auto-create error:', e?.message);
+      }
+    }
+
     const accessToken = this.generateToken(user.id, user.email, user.globalRole);
 
     return {
-      user,
+      user: { ...user, isSeller: storeCreated },
       accessToken,
     };
   }

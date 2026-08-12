@@ -6,7 +6,10 @@ import Header from "../components/Header";
 
 async function getProducts() {
   try {
-    const res = await fetch("http://localhost:5000/products", { cache: "no-store" });
+    const res = await fetch("http://localhost:5000/products?limit=20&page=1", {
+      cache: "no-store",
+      next: { revalidate: 0 },
+    });
     if (!res.ok) return [];
     const json = await res.json();
     return json.data || [];
@@ -15,8 +18,19 @@ async function getProducts() {
   }
 }
 
+async function getCategories() {
+  try {
+    const res = await fetch("http://localhost:5000/products/categories", { cache: "no-store" });
+    if (!res.ok) return [];
+    return await res.json();
+  } catch {
+    return [];
+  }
+}
+
 export default async function Home() {
   const products = await getProducts();
+  const dbCategories = await getCategories();
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 font-sans selection:bg-cyan-200">
@@ -72,19 +86,20 @@ export default async function Home() {
           <h2 className="font-bold text-lg mb-6 text-slate-800">Kategori Pilihan</h2>
           <div className="flex gap-4 md:gap-8 overflow-x-auto no-scrollbar pb-4 -mb-4">
             {[
-              { name: "Pakaian", icon: <FaShirt className="w-8 h-8" />, color: "bg-blue-50 text-blue-600 border-blue-200 shadow-blue-100" },
               { name: "Elektronik", icon: <FaMobileScreen className="w-8 h-8" />, color: "bg-cyan-50 text-cyan-600 border-cyan-200 shadow-cyan-100" },
-              { name: "Sepatu", icon: <FaShoePrints className="w-8 h-8" />, color: "bg-sky-50 text-sky-600 border-sky-200 shadow-sky-100" },
-              { name: "Kecantikan", icon: <FaWandMagicSparkles className="w-8 h-8" />, color: "bg-pink-50 text-pink-600 border-pink-200 shadow-pink-100" },
-              { name: "Makanan", icon: <FaBurger className="w-8 h-8" />, color: "bg-orange-50 text-orange-600 border-orange-200 shadow-orange-100" },
-              { name: "Otomotif", icon: <FaCar className="w-8 h-8" />, color: "bg-slate-50 text-slate-600 border-slate-200 shadow-slate-100" },
-              { name: "Kesehatan", icon: <FaPills className="w-8 h-8" />, color: "bg-green-50 text-green-600 border-green-200 shadow-green-100" },
+              { name: "Fashion Pria", icon: <FaShirt className="w-8 h-8" />, color: "bg-blue-50 text-blue-600 border-blue-200 shadow-blue-100" },
+              { name: "Fashion Wanita", icon: <FaWandMagicSparkles className="w-8 h-8" />, color: "bg-pink-50 text-pink-600 border-pink-200 shadow-pink-100" },
+              { name: "Sepatu & Sandal", icon: <FaShoePrints className="w-8 h-8" />, color: "bg-sky-50 text-sky-600 border-sky-200 shadow-sky-100" },
+              { name: "Olahraga", icon: <FaCar className="w-8 h-8" />, color: "bg-orange-50 text-orange-600 border-orange-200 shadow-orange-100" },
+              { name: "Kesehatan & Kecantikan", icon: <FaPills className="w-8 h-8" />, color: "bg-green-50 text-green-600 border-green-200 shadow-green-100" },
+              { name: "Rumah & Dapur", icon: <FaBurger className="w-8 h-8" />, color: "bg-amber-50 text-amber-600 border-amber-200 shadow-amber-100" },
+              { name: "Buku & Alat Tulis", icon: <FaShirt className="w-8 h-8" />, color: "bg-violet-50 text-violet-600 border-violet-200 shadow-violet-100" },
             ].map((cat, i) => (
-              <div key={i} className="flex flex-col items-center gap-3 cursor-pointer group">
+              <div key={i} className="flex flex-col items-center gap-3 cursor-pointer group shrink-0">
                 <div className={`w-16 h-16 rounded-2xl border flex items-center justify-center text-3xl group-hover:-translate-y-2 transition-transform shadow-md ${cat.color}`}>
                   {cat.icon}
                 </div>
-                <span className="text-xs font-semibold text-slate-700 text-center w-16 leading-tight">{cat.name}</span>
+                <span className="text-xs font-semibold text-slate-700 text-center w-20 leading-tight">{cat.name}</span>
               </div>
             ))}
           </div>
@@ -112,7 +127,7 @@ export default async function Home() {
 
           <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-4">
             {products.length > 0 ? products.slice(0, 6).map((prod: any) => (
-              <div key={prod.id} className="bg-white text-slate-800 rounded-xl overflow-hidden hover:-translate-y-1.5 transition-transform cursor-pointer shadow-md">
+              <Link key={prod.id} href={"/products/" + prod.slug} className="bg-white text-slate-800 rounded-xl overflow-hidden hover:-translate-y-1.5 transition-transform cursor-pointer shadow-md block">
                 <div className="relative aspect-square bg-slate-100 flex items-center justify-center">
                   {prod.images && prod.images.length > 0 ? (
                     <Image src={prod.images[0].imageUrl} alt={prod.name} fill className="object-cover" />
@@ -128,11 +143,11 @@ export default async function Home() {
                   <p className="font-extrabold text-cyan-600 text-lg">Rp {Number(prod.variants?.[0]?.price || 0).toLocaleString('id-ID')}</p>
                   <p className="text-[10px] text-slate-400 line-through mb-1">Rp {(Number(prod.variants?.[0]?.price || 0) * 1.1).toLocaleString('id-ID')}</p>
                   <div className="w-full bg-slate-200 rounded-full h-1.5 mt-2 overflow-hidden">
-                    <div className="bg-red-500 h-1.5 rounded-full" style={{ width: `${Math.random() * 60 + 20}%` }}></div>
+                    <div className="bg-red-500 h-1.5 rounded-full" style={{ width: "45%" }}></div>
                   </div>
                   <p className="text-[10px] font-semibold text-red-500 mt-1">Segera Habis</p>
                 </div>
-              </div>
+              </Link>
             )) : (
               <div className="col-span-full py-10 text-center text-cyan-100 font-medium bg-white/10 rounded-xl border border-white/20">
                 Promo flash sale sedang dipersiapkan...
@@ -151,7 +166,7 @@ export default async function Home() {
           
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
             {products.length > 0 ? products.map((prod: any) => (
-              <div key={prod.id} className="bg-white border border-slate-200 rounded-2xl overflow-hidden hover:shadow-xl hover:shadow-cyan-100 hover:border-cyan-300 transition-all cursor-pointer group flex flex-col">
+              <Link key={prod.id} href={"/products/" + prod.slug} className="bg-white border border-slate-200 rounded-2xl overflow-hidden hover:shadow-xl hover:shadow-cyan-100 hover:border-cyan-300 transition-all cursor-pointer group flex flex-col">
                 <div className="relative aspect-square bg-slate-100 overflow-hidden flex items-center justify-center">
                    {prod.images && prod.images.length > 0 ? (
                      <Image src={prod.images[0].imageUrl} alt={prod.name} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
@@ -174,11 +189,11 @@ export default async function Home() {
                       </svg>
                       <span className="font-medium text-slate-600">4.9</span>
                       <span className="px-1 text-slate-300">|</span>
-                      <span>Terjual {Math.floor(Math.random() * 50) + 1}</span>
+                      <span>Terjual 25+</span>
                     </div>
                   </div>
                 </div>
-              </div>
+              </Link>
             )) : (
               <div className="col-span-full py-20 text-center text-slate-400 font-medium">
                 Belum ada produk yang dijual di sakserShop.
