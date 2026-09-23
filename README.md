@@ -12,26 +12,26 @@
 
 ---
 
-## 📌 Overview
+## Overview
 A complete end-to-end e-commerce solution with a NestJS backend and Next.js frontend featuring product catalogs, store locator maps, and shopping carts.
 
 ---
 
-## ✨ Key Features
+## Key Features
 - Interactive map integration with Leaflet for store branch selection
 - Product search, filtering by brand and price, and review ratings
 - Full cart and checkout workflow with order tracking
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 - **Frontend**: Next.js, React, Tailwind CSS, Leaflet
 - **Backend**: NestJS, Prisma ORM, JWT
 - **Language**: TypeScript
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 ```text
 e-commers/
 ├── e-commers-be/       # NestJS Backend API
@@ -40,7 +40,7 @@ e-commers/
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 Make sure you have the required runtimes and tools installed on your machine:
@@ -59,7 +59,7 @@ cd ../e-commers-fe && npm install && npm run dev
 
 ---
 
-## 👤 Author
+## Author
 **Mohammad Kevin Arif Rudianto**
 - **GitHub:** [@MohammadKevin](https://github.com/MohammadKevin)
 - **Portfolio:** [portfolio-mohammadkevin.vercel.app](https://portfolio-mohammadkevin.vercel.app)
@@ -68,9 +68,9 @@ cd ../e-commers-fe && npm install && npm run dev
 
 ---
 
-## 📄 License
+## License
 This project is licensed under the [MIT License](https://opensource.org/licenses/MIT).
 
 <div align="center">
-⭐️ If you found this repository useful, please consider giving it a star!
+If you found this repository useful, please consider giving it a star!
 </div>
