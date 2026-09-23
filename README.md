@@ -18,9 +18,9 @@ A complete end-to-end e-commerce solution with a NestJS backend and Next.js fron
 ---
 
 ## ✨ Key Features
-- ⚡ **Interactive map integration with Leaflet for store branch selection**: Interactive map integration with Leaflet for store branch selection
-- ⚡ **Product search, filtering by brand and price, and review ratings**: Product search, filtering by brand and price, and review ratings
-- ⚡ **Full cart and checkout workflow with order tracking**: Full cart and checkout workflow with order tracking
+- Interactive map integration with Leaflet for store branch selection
+- Product search, filtering by brand and price, and review ratings
+- Full cart and checkout workflow with order tracking
 
 ---
 
